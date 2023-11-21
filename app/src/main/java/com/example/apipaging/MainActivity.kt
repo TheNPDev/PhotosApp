@@ -8,12 +8,18 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraph
+import androidx.navigation.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.ExperimentalPagingApi
 import coil.annotation.ExperimentalCoilApi
+import com.example.apipaging.navigation.Screen
 import com.example.apipaging.navigation.SetupNavGraph
+import com.example.apipaging.screens.SplashScreen
 import com.example.apipaging.ui.theme.ApiPagingTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,24 +31,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ApiPagingTheme {
-                // A surface container using the 'background' color from the theme
                 val navController = rememberNavController()
-                SetupNavGraph(navController = navController)
+
+                val splashScreenShown = remember { mutableStateOf(true) }
+
+                val navigateToMainScreen = {
+                    splashScreenShown.value = false
+                }
+
+                if (splashScreenShown.value) {
+                    SplashScreen(navigateToMainScreen)
+                } else {
+                    SetupNavGraph(navController = navController)
+                }
 
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ApiPagingTheme {
-        Greeting("Android")
-    }
-}
